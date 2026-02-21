@@ -9,6 +9,7 @@
 //// scattered across the codebase.
 ////
 
+import gleam/option
 import glimr/config/auth as auth_config
 import glimr/session/session.{type Session}
 
@@ -61,4 +62,17 @@ pub fn id(session: Session) -> Result(String, Nil) {
   let config = auth_config.load()
 
   session.get(session, config.session_key)
+}
+
+/// Templates and context structs often use Option(String) for
+/// the current user rather than Result — Option maps naturally
+/// to "present or absent" while Result implies an operation that
+/// could fail. This bridges the two so middleware can populate
+/// ctx.user without unwrapping a Result at every call site.
+///
+pub fn resolve_user(session: Session) -> option.Option(String) {
+  case id(session) {
+    Ok(id) -> option.Some(id)
+    Error(_) -> option.None
+  }
 }

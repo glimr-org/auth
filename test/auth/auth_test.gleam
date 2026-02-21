@@ -15,7 +15,6 @@ fn setup() -> Nil {
     simplifile.write(
       config_file,
       "[auth]
-  login_redirect = \"/login\"
   session_key = \"_auth_user_id\"
 ",
     )
