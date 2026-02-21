@@ -53,5 +53,6 @@ pub fn verify(password: String, encoded_hash: String) -> Bool {
 ///
 pub fn dummy_verify(password: String) -> Bool {
   let dummy_hash = make("__glimr_dummy__")
+
   verify(password, dummy_hash)
 }
