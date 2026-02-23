@@ -5,12 +5,11 @@
 //// to a magic string that could drift between modules. This
 //// module wraps the session with semantic helpers (login,
 //// logout, check, id) so auth logic reads clearly and the
-//// session key is defined once in config rather than
-//// scattered across the codebase.
+//// session key is passed explicitly by the caller (typically
+//// from the generated middleware's `session_key` constant).
 ////
 
 import gleam/option
-import glimr/config/auth as auth_config
 import glimr/session/session.{type Session}
 
 // ------------------------------------------------------------- Public Functions
@@ -22,10 +21,8 @@ import glimr/session/session.{type Session}
 /// preserving all session data so the user doesn't lose
 /// pre-login state like a shopping cart.
 ///
-pub fn login(session: Session, user_id: String) -> Nil {
-  let config = auth_config.load()
-
-  session.put(session, config.session_key, user_id)
+pub fn login(session: Session, user_id: String, session_key: String) -> Nil {
+  session.put(session, session_key, user_id)
   session.regenerate(session)
 }
 
@@ -46,10 +43,8 @@ pub fn logout(session: Session) -> Nil {
 /// full user ID keeps the call site clean when the ID itself
 /// isn't needed for the decision.
 ///
-pub fn check(session: Session) -> Bool {
-  let config = auth_config.load()
-
-  session.has(session, config.session_key)
+pub fn check(session: Session, session_key: String) -> Bool {
+  session.has(session, session_key)
 }
 
 /// Returns a Result so callers can distinguish "not logged in"
@@ -58,10 +53,8 @@ pub fn check(session: Session) -> Bool {
 /// permissions use this, while simple auth gates use check
 /// instead.
 ///
-pub fn id(session: Session) -> Result(String, Nil) {
-  let config = auth_config.load()
-
-  session.get(session, config.session_key)
+pub fn id(session: Session, session_key: String) -> Result(String, Nil) {
+  session.get(session, session_key)
 }
 
 /// Templates and context structs often use Option(String) for
@@ -70,8 +63,11 @@ pub fn id(session: Session) -> Result(String, Nil) {
 /// could fail. This bridges the two so middleware can populate
 /// ctx.user without unwrapping a Result at every call site.
 ///
-pub fn resolve_user(session: Session) -> option.Option(String) {
-  case id(session) {
+pub fn resolve_user(
+  session: Session,
+  session_key: String,
+) -> option.Option(String) {
+  case id(session, session_key) {
     Ok(id) -> option.Some(id)
     Error(_) -> option.None
   }
