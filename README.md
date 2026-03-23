@@ -1,4 +1,4 @@
-# Glimr Auth
+# Glimr Auth ✨
 
 The official authentication layer for the Glimr web framework, providing session-based auth and secure password hashing. This package is meant to be used alongside the `glimr-org/framework` package.
 
