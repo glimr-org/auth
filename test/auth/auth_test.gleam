@@ -2,7 +2,7 @@ import gleam/dict
 import gleam/int
 import gleam/option
 import gleeunit/should
-import glimr/session/session
+import glimr/session
 import glimr/utils/unix_timestamp
 import glimr_auth/auth
 

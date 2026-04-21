@@ -12,7 +12,7 @@
 import gleam/int
 import gleam/option
 import gleam/result
-import glimr/session/session.{type Session}
+import glimr/session.{type Session}
 import glimr/utils/unix_timestamp
 
 // ------------------------------------------------------------- Public Types

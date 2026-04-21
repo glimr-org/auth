@@ -1,5 +1,5 @@
 name = "glimr_auth"
-version = "1.0.0"
+version = "1.0.1"
 
 description = "Auth layer for the Glimr web framework"
 licences = ["MIT"]
